@@ -2,9 +2,11 @@ import * as assert from 'assert';
 
 import Mutex from '../src/Mutex';
 
+
+
 suite('Mutex', function() {
 
-    let mutex: Mutex;
+    let mutex;
 
     setup(() => mutex = new Mutex());
 

@@ -1,13 +1,35 @@
-import MutexInterface from './MutexInterface';
+import MutexTimoutError from './MutexTimeoutError';
 
-class Mutex implements MutexInterface {
+/**
+ * @typedef {function(void): void} MutexReleaser
+ */
 
-    isLocked(): boolean {
+class Mutex {
+    constructor(options) {
+        /**
+         *
+         * @type {Array<MutexReleaser>}
+         * @private
+         */
+        this._queue = [];
+        /**
+         *
+         * @type {Boolean}
+         * @private
+         */
+        this._pending = false;
+    }
+    
+    isLocked() {
         return this._pending;
     }
-
-    acquire(): Promise<MutexInterface.Releaser> {
-        const ticket = new Promise<MutexInterface.Releaser>(resolve => this._queue.push(resolve));
+    
+    /**
+     *
+     * @return {Promise<MutexReleaser>}
+     */
+    acquire() {
+        const ticket = new Promise(resolve => this._queue.push(resolve));
 
         if (!this._pending) {
             this._dispatchNext();
@@ -15,12 +37,17 @@ class Mutex implements MutexInterface {
 
         return ticket;
     }
-
-    runExclusive<T>(callback: MutexInterface.Worker<T>): Promise<T> {
+    
+    /**
+     * @template T
+     * @param {function(): (T|Promise<T>} callback
+     * @return {Promise<T>}
+     */
+    runExclusive(callback)  {
         return this
             .acquire()
             .then(release => {
-                    let result: T|Promise<T>;
+                    let result;
 
                     try {
                         result = callback();
@@ -32,7 +59,10 @@ class Mutex implements MutexInterface {
                     return Promise
                         .resolve(result)
                         .then(
-                            (x: T) => (release(), x),
+                            x => {
+                                release();
+                                return x;
+                            },
                             e => {
                                 release();
                                 throw e;
@@ -42,7 +72,7 @@ class Mutex implements MutexInterface {
             );
     }
 
-    private _dispatchNext(): void {
+    _dispatchNext() {
         if (this._queue.length > 0) {
             this._pending = true;
             this._queue.shift()!(this._dispatchNext.bind(this));
@@ -50,10 +80,6 @@ class Mutex implements MutexInterface {
             this._pending = false;
         }
     }
-
-    private _queue: Array<(release: MutexInterface.Releaser) => void> = [];
-    private _pending = false;
-
 }
 
 export default Mutex;

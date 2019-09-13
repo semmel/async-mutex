@@ -15,5 +15,6 @@
 	"nonew": true,
 	"forin": true,
 	"shadow": "outer",
+	"mocha": true,
 	"predef": [ "require", "requirejs", "define" ]
 }

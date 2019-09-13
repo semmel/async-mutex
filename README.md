@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/DirtyHairy/async-mutex.svg?branch=master)](https://travis-ci.org/DirtyHairy/async-mutex)
-[![npm version](https://badge.fury.io/js/async-mutex.svg)](https://badge.fury.io/js/async-mutex)
 
 # What is it?
 
 This package implements a mutex for synchronizing asynchronous operations in
-Javascript.
+JavaScript.
 
 The term "mutex" usually refers to a data structure used to synchronize
 concurrent processes running on different threads. For example, before accessing
@@ -37,12 +35,6 @@ You can install the library into your project via npm
 
     npm install async-mutex
 
-The library is written in TypeScript and will work in any environment that
-supports ES5 and ES6 promises. If ES6 promises are not supported natively,
-a shim can be used (e.g. [core-js](https://github.com/zloirock/core-js)).
-No external typings are required for using this library with
-TypeScript (version >= 2).
-
 ## Importing
 
 ES5 / CommonJS
@@ -55,17 +47,12 @@ ES6
 import {Mutex} from 'async-mutex';
 ```
 
-TypeScript
-```typescript
-import {Mutex, MutexInterface} from 'async-mutex';
-```
-
 ##  API
 
 ### Creating
 
-ES5/ES6/TypeScript
-```typescript
+ES5/ES6
+```javascript
 const mutex = new Mutex();
 ```
 
@@ -73,8 +60,8 @@ Create a new mutex.
 
 ### Locking
 
-ES5/ES6/TypeScript
-```typescript
+ES5/ES6
+```javascript
 mutex
     .acquire()
     .then(function(release) {
@@ -90,9 +77,9 @@ must be called once the mutex should be released again.
 lilely deadlock the application. Make sure to call `release` under all circumstances
 and handle exceptions accordingly.
 
-##### Async function example (ESnext/TypeScript)
+##### Async function example
 
-```typescript
+```javascript
 const release = await mutex.acquire();
 try {
     const i = await store.get();
@@ -104,8 +91,8 @@ try {
 
 ### Synchronized code execution
 
-ES5/ES6/TypeScript
-```typescript
+ES5/ES6
+```javascript
 mutex
     .runExclusive(function() {
         // ...
@@ -115,12 +102,12 @@ mutex
     });
 ```
 
-##### Async function example (ESnext/TypeScript)
+##### Async function example
 
 This example is equivalent to the `async`/`await` example that
 locks the mutex directly:
 
-```typescript
+```javascript
 await mutex.runExclusive(async () => {
     const i = await store.get();
     await store.put(i + 1);
@@ -137,8 +124,8 @@ if the callback.
 
 ### Checking whether the mutex is locked
 
-ES5/ES6/TypeScript
-```typescript
+ES5/ES6
+```javascript
 mutex.isLocked();
 ```
 

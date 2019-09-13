@@ -5,6 +5,7 @@
   "scripts": {
     "test": "mocha"
   },
+  "type": "module",
   "author": "Christian Speckner <cnspeckn@googlemail.com> (https://github.com/DirtyHairy/)",
   "license": "MIT",
   "repository": {
@@ -17,7 +18,8 @@
     "promise"
   ],
   "devDependencies": {
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "esm": "^3.2.25"
   },
   "main": "lib/index.js",
   "dependencies": {}

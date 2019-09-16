@@ -39,12 +39,7 @@ You can install the library into your project via npm
 
 ES5 / CommonJS
 ```javascript
-var asyncMutex = require('async-mutex').Mutex;
-```
-
-ES6
-```javascript
-import {Mutex} from 'async-mutex';
+var createMutex = require('async-mutex').createMutex;
 ```
 
 ##  API
@@ -53,7 +48,7 @@ import {Mutex} from 'async-mutex';
 
 ES5/ES6
 ```javascript
-const mutex = new Mutex();
+const mutex = createMutex({timeout: 500});
 ```
 
 Create a new mutex.
@@ -76,6 +71,9 @@ must be called once the mutex should be released again.
 **IMPORTANT:** Failure to call `release` will hold the mutex locked and will
 lilely deadlock the application. Make sure to call `release` under all circumstances
 and handle exceptions accordingly.
+
+If a `timeout` duration was specified when creating the Mutex with `createMutex`, the `.acquire` promise
+will reject with a `MutexTimeoutError` when the waiting period had elapsed before a lock on the mutex could be obtained.
 
 ##### Async function example
 
@@ -115,9 +113,8 @@ await mutex.runExclusive(async () => {
 ```
 
 `runExclusive` schedules the supplied callback to be run once the mutex is unlocked.
-The function is expected to return a [Promises/A+](https://promisesaplus.com/)
-compliant promise. Once the promise is resolved (or rejected), the mutex is released.
-`runExclusive` returns a promise that adops the state of the function result.
+The function is expected to return a promise. Once the promise is resolved (or rejected), the mutex is released.
+`runExclusive` returns a promise that adopts the state of the function result.
 
 The mutex is released and the result rejected if an exception occurs during execution
 if the callback.

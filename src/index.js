@@ -1,2 +1,2 @@
-export {default as Mutex} from './Mutex';
-export {default as MutexInterface} from './MutexInterface';
+module.exports.MutexTimeoutError = require('./MutexTimeoutError');
+module.exports.createMutex = require('./Mutex');

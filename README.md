@@ -1,4 +1,6 @@
 [![Dependencies](https://david-dm.org/semmel/async-timeout-mutex.svg)](https://david-dm.org/semmel/async-timeout-mutex.svg)
+[![Build status](https://travis-ci.org/semmel/async-timeout-mutex.svg?branch=with-timeout)](https://travis-ci.org/semmel/async-timeout-mutex.svg?branch=with-timeout)
+
 # What is it?
 
 This package implements a mutex for synchronizing asynchronous operations in

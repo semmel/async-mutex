@@ -1,4 +1,4 @@
-
+[![Dependencies](https://david-dm.org/semmel/async-timeout-mutex.svg)](https://david-dm.org/semmel/async-timeout-mutex.svg)
 # What is it?
 
 This package implements a mutex for synchronizing asynchronous operations in

@@ -33,13 +33,18 @@ to release the mutex, allowing the next scheduled worker to execute.
 
 You can install the library into your project via npm
 
-    npm install async-mutex
+    npm install async-timeout-mutex
 
 ## Importing
 
 ES5 / CommonJS
 ```javascript
-var createMutex = require('async-mutex').createMutex;
+var createMutex = require('async-timeout-mutex').createMutex;
+```
+
+Browser
+```html
+<script src="async-timeout-mutex.js"></script>
 ```
 
 ##  API

@@ -8,7 +8,7 @@
 		}
 		div {
 			width: 90%;
-			max-width: 700px;
+			max-width: 900px;
 		}
 		.error {
 			color: red;
@@ -40,15 +40,17 @@
 	<button id="acquire-two">Acquire Mutex</button>
 	<span>Exclusive access for <span id="count-down-two">n/a</span>secs.</span>
 </div>
-<script src="../dist/async-timeout-mutex.js"></script>
-<script>
+<!--<script src="../dist/async-timeout-mutex.js"></script>-->
+<script type="module">
+	import {createMutex} from '../dist/async-timeout-mutex.mjs';
+
 	const
 		firstButton = document.querySelector('#acquire-one'),
 		secondButton = document.querySelector('#acquire-two'),
 		firstCountDown = document.querySelector('#count-down-one'),
 		secondCountDown = document.querySelector('#count-down-two'),
 		lockStateIndicator = document.querySelector('#lock-state'),
-		mutex = AsyncTimeoutMutex.createMutex({timeout: 5000}),
+		mutex = /*AsyncTimeoutMutex.*/createMutex({timeout: 5000}),
 
 		acquireThenRelease = indicator => {
 			indicator.textContent = "Waiting...";

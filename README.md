@@ -37,16 +37,27 @@ You can install the library into your project via npm
 
 ## Importing
 
-CommonJS
+#### CommonJS
 ```javascript
 var createMutex = require('async-timeout-mutex').createMutex;
 ```
 
-Browser
+#### Browser
+Globally
+
 ```html
 <script src="dist/async-timeout-mutex.js"></script>
 <script>
 var createMutex = AsyncTimeoutMutex.createMutex;
+// ...
+</script>
+```
+
+ESM module
+```html
+<script type="module">
+import {createMutex} from 'dist/async-timeout-mutex.mjs';
+//...
 </script>
 ```
 
@@ -77,7 +88,7 @@ mutex
 );
 ```
 
-`acquire` returns an (ES6) promise that will resolve as soon as the mutex is
+`acquire` returns a promise that will resolve as soon as the mutex is
 available and ready to be accessed. The promise resolves with a function `release` that
 must be called once the mutex should be released again.
 
@@ -139,7 +150,7 @@ mutex.isLocked();
 
 ### Browser Demo
 
-[Run in browser](demo/demo.html)
+[Run in browser](https://htmlpreview.github.io/?https://github.com/semmel/async-timeout-mutex/blob/with-timeout/demo/demo.html)
 
 # License
 

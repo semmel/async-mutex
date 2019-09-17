@@ -1,12 +1,13 @@
 {
   "name": "async-timeout-mutex",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A mutex for guarding async workflows",
   "scripts": {
     "test": "mocha --ui tdd test/mutex.js",
-    "build": "rollup --config --exports named"
+    "build": "npm run build:umd && npm run build:esm",
+    "build:umd": "rollup --config --exports named",
+    "build:esm": "rollup --config rollup.esm.config.js"
   },
-  "type": "module",
   "contributors": [
     "Christian Speckner <cnspeckn@googlemail.com> (https://github.com/DirtyHairy/)",
     "Matthias Seemann <seemann@visisoft.de> (https://github.com/semmel/)"

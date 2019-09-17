@@ -154,63 +154,50 @@ suite('Timeout Mutex', function() {
     test("rejects early and long waiting acquisitions, but fulfills later acquisitions", function() {
         let flag = false;
         
-        console.log("[blocker");
         mutex.acquire()
         .then(release => new Promise(resolve => {
-            console.log("..blocker");
             setTimeout(() => {
                 flag = true;
-                console.log("blocker.. done.");
                 release();
                 resolve();
             }, 2 * TIMEOUT);
-        }))
-        .finally(() => console.log("blocker]"));
+        }));
         
         const
            earlyAcquisition =
             new Promise(resolve => setTimeout(resolve, 0.8 * TIMEOUT))
             .then(() => {
                 assert.ok(mutex.isLocked());
-                console.log("[early");
                 return mutex.acquire();
             })
-            .then(() => assert.ok(false, "this mutex should not have been acquired"))
-           .finally(() => console.log("early]")),
+            .then(() => assert.ok(false, "this mutex should not have been acquired")),
         
             lateAcquisition =
                new Promise(resolve => setTimeout(resolve, 1.5 * TIMEOUT))
                 .then(() => {
                     assert.ok(mutex.isLocked());
-                    console.log("[late");
                     return mutex.acquire();
                 })
                 .then(releaseMutex => {
-                    console.log("..late..");
                    assert.ok(flag);
                    flag = "3rd state";
                    return new Promise(resolve => setTimeout(resolve, 10))
                       .then(() => {
-                          console.log("late..done.");
                           releaseMutex();
                       });
-                })
-                .finally(() => console.log("late]")),
+                }),
            
            lastAcquisition =
               lateAcquisition
               .then(() => new Promise(resolve => setTimeout(resolve, 0.2 * TIMEOUT)))
                 .then(() => {
-                    console.log("[last");
                    assert.ok(mutex.isLocked() === false);
                    return mutex.acquire();
                 })
                 .then(release => {
-                    console.log("..last..");
                     assert.ok(flag === "3rd state");
                     release();
-                })
-                .finally(() => console.log("last]"));
+                });
         
         return Promise.all([
            assert.rejects(earlyAcquisition, MutexTimeoutError),

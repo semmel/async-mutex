@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "A mutex for guarding async workflows",
   "scripts": {
-    "test": "mocha --ui tdd test/mutex.js"
+    "test": "mocha --ui tdd test/mutex.js",
+    "build": "rollup --config --exports named"
   },
   "type": "module",
   "contributors": [
@@ -22,7 +23,9 @@
     "timeout"
   ],
   "devDependencies": {
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "rollup": "^1.21.4",
+    "rollup-plugin-commonjs": "^10.1.0"
   },
   "main": "src/index.js",
   "dependencies": {}

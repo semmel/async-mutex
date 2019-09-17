@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<style>
+		* {
+			margin: 10px;
+		}
+		div {
+			width: 90%;
+			max-width: 700px;
+		}
+		.error {
+			color: red;
+		}
+		#count-down-two,
+		#count-down-one {
+			font-family: monospace;
+			font-size: larger;
+		}
+		#lock-state {
+			border: green solid 2px;
+			padding: 2px;
+			font-family: monospace;
+			font-size: larger;
+		}
+	</style>
+</head>
+<div>
+	Both buttons try to acquire the same mutex which they automatically release after 10 seconds.</div>
+<div>
+	The mutex has a built-in acquire timeout of 5 seconds.
+</div>
+<div>
+	<button id="acquire-one">Acquire Mutex</button>
+	<span>Exclusive access for <span id="count-down-one">n/a</span>secs.</span>
+	<span>is locked:<span id="lock-state">false</span></span>
+</div>
+<div>
+	<button id="acquire-two">Acquire Mutex</button>
+	<span>Exclusive access for <span id="count-down-two">n/a</span>secs.</span>
+</div>
+<script src="../dist/async-timeout-mutex.js"></script>
+<script>
+	const
+		firstButton = document.querySelector('#acquire-one'),
+		secondButton = document.querySelector('#acquire-two'),
+		firstCountDown = document.querySelector('#count-down-one'),
+		secondCountDown = document.querySelector('#count-down-two'),
+		lockStateIndicator = document.querySelector('#lock-state'),
+		mutex = AsyncTimeoutMutex.createMutex({timeout: 5000}),
+
+		acquireThenRelease = indicator => {
+			indicator.textContent = "Waiting...";
+			indicator.classList.remove('error');
+			updateLockStateIndicator();
+
+			return mutex.acquire()
+			.then(_ => { updateLockStateIndicator(); return _; })
+			.then(
+				release => {
+					indicator.textContent = 0;
+					const
+						ticker = setInterval(
+							(function() {
+								var counter = 0;
+								return function() { indicator.textContent = ++counter; };
+							}()),
+							1000
+						);
+
+					return new Promise(resolve => setTimeout(resolve, 10000))
+					.then(() => {
+						clearInterval(ticker);
+						indicator.textContent = 'n/a';
+						release();
+					});
+				},
+				error => {
+					indicator.textContent = error.message;
+					indicator.classList.add("error");
+				}
+			);
+		},
+
+		updateLockStateIndicator = () => {
+			lockStateIndicator.textContent = mutex.isLocked();
+		};
+
+	firstButton.addEventListener('click', () => {
+		firstButton.setAttribute("disabled", "");
+
+		acquireThenRelease(firstCountDown)
+		.then(() => firstButton.removeAttribute("disabled"))
+		.finally(updateLockStateIndicator);
+	});
+
+	secondButton.addEventListener('click', () => {
+		secondButton.setAttribute("disabled", "");
+
+		acquireThenRelease(secondCountDown)
+		.then(() => secondButton.removeAttribute("disabled"))
+		.finally(updateLockStateIndicator);
+	});
+
+</script>
+</html>

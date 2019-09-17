@@ -37,36 +37,44 @@ You can install the library into your project via npm
 
 ## Importing
 
-ES5 / CommonJS
+CommonJS
 ```javascript
 var createMutex = require('async-timeout-mutex').createMutex;
 ```
 
 Browser
 ```html
-<script src="async-timeout-mutex.js"></script>
+<script src="dist/async-timeout-mutex.js"></script>
+<script>
+var createMutex = AsyncTimeoutMutex.createMutex;
+</script>
 ```
 
 ##  API
 
 ### Creating
 
-ES5/ES6
 ```javascript
 const mutex = createMutex({timeout: 500});
 ```
 
-Create a new mutex.
+Creates a new mutex. The configuration object with the timeout setting is optional.
 
 ### Locking
 
-ES5/ES6
 ```javascript
 mutex
-    .acquire()
-    .then(function(release) {
-        // ...
-    });
+.acquire()
+.then(
+   function(release) {
+      // ...
+   },
+   function(error) {
+      if (error.name === 'MutexTimeoutError') {
+      	console.warn("A mutex could not be acquired within acceptable time");
+      }
+   }
+);
 ```
 
 `acquire` returns an (ES6) promise that will resolve as soon as the mutex is
@@ -74,7 +82,7 @@ available and ready to be accessed. The promise resolves with a function `releas
 must be called once the mutex should be released again.
 
 **IMPORTANT:** Failure to call `release` will hold the mutex locked and will
-lilely deadlock the application. Make sure to call `release` under all circumstances
+likely deadlock the application. Make sure to call `release` under all circumstances
 and handle exceptions accordingly.
 
 If a `timeout` duration was specified when creating the Mutex with `createMutex`, the `.acquire` promise
@@ -94,15 +102,14 @@ try {
 
 ### Synchronized code execution
 
-ES5/ES6
 ```javascript
 mutex
-    .runExclusive(function() {
-        // ...
-    })
-    .then(function(result) {
-        // ...
-    });
+.runExclusive(function() {
+    // ...
+})
+.then(function(result) {
+    // ...
+});
 ```
 
 ##### Async function example
@@ -126,10 +133,13 @@ if the callback.
 
 ### Checking whether the mutex is locked
 
-ES5/ES6
 ```javascript
 mutex.isLocked();
 ```
+
+### Browser Demo
+
+[Run in browser](demo/demo.html)
 
 # License
 

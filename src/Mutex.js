@@ -63,7 +63,6 @@ const
 			_timeout = options && options.timeout,
 			
 			_dispatchNext = () => {
-				console.log(_queue.length);
 				if (_queue.length > 0) {
 					_pending = true;
 					

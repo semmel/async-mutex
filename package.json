@@ -28,8 +28,7 @@
   "devDependencies": {
     "mocha": "^6.2.0",
     "rollup": "^1.21.4",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-terser": "^6.0.3"
+    "rollup-plugin-commonjs": "^10.1.0"
   },
   "main": "dist/async-timeout-mutex.js",
   "unpkg": "dist/async-timeout-mutex.min.js",

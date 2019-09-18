@@ -1,5 +1,6 @@
-[![Dependencies](https://david-dm.org/semmel/async-timeout-mutex.svg)](https://david-dm.org/semmel/async-timeout-mutex.svg)
-[![Build status](https://travis-ci.org/semmel/async-timeout-mutex.svg?branch=with-timeout)](https://travis-ci.org/semmel/async-timeout-mutex.svg?branch=with-timeout)
+[![Build status](https://travis-ci.org/semmel/async-timeout-mutex.svg?branch=with-timeout)](https://travis-ci.org/semmel/async-timeout-mutex)
+[![NPM Version](https://badge.fury.io/js/async-timeout-mutex.svg)](https://www.npmjs.com/package/async-timeout-mutex)
+[![Dependencies](https://david-dm.org/semmel/async-timeout-mutex.svg)](https://david-dm.org/semmel/async-timeout-mutex)
 
 # What is it?
 
@@ -8,10 +9,10 @@ JavaScript.
 
 The term "mutex" usually refers to a data structure used to synchronize
 concurrent processes running on different threads. For example, before accessing
-a non-threadsafe resource, a thread will lock the mutex. This is guranteed
+a non-threadsafe resource, a thread will lock the mutex. This is guaranteed
 to block the thread until no other thread holds a lock on the mutex and thus
 enforces exclusive access to the resource. Once the operation is complete, the
-thread releases the lock, allowing other threads to aquire a lock and access the
+thread releases the lock, allowing other threads to acquire a lock and access the
 resource.
 
 While Javascript is strictly single-threaded, the asynchronous nature of its
@@ -29,6 +30,8 @@ are held on the mutex. Once the async process is complete (usually taking multip
 spins of the event loop), a callback supplied to the worker is called in order
 to release the mutex, allowing the next scheduled worker to execute.
 
+You can read more motivation in [this blog post](https://blog.mayflower.de/6369-javascript-mutex-synchronizing-async-operations.html).
+
 # How to use it?
 
 ## Installation
@@ -45,9 +48,10 @@ var createMutex = require('async-timeout-mutex').createMutex;
 ```
 
 #### Browser
-Globally
+Globally/CommonJS/RequireJS from the UMD bundle
 
 ```html
+<!-- global install -->
 <script src="dist/async-timeout-mutex.js"></script>
 <script>
 var createMutex = AsyncTimeoutMutex.createMutex;
@@ -76,17 +80,10 @@ Creates a new mutex. The configuration object with the timeout setting is option
 ### Locking
 
 ```javascript
-mutex
-.acquire()
-.then(
-   function(release) {
-      // ...
-   },
-   function(error) {
-      if (error.name === 'MutexTimeoutError') {
-      	console.warn("A mutex could not be acquired within acceptable time");
-      }
-   }
+mutex.acquire()
+.then(release =>
+   doAsyncStuff()  // worker returns a promise
+   .finally(release)
 );
 ```
 
@@ -100,6 +97,30 @@ and handle exceptions accordingly.
 
 If a `timeout` duration was specified when creating the Mutex with `createMutex`, the `.acquire` promise
 will reject with a `MutexTimeoutError` when the waiting period had elapsed before a lock on the mutex could be obtained.
+
+##### Timeout example
+
+```javascript
+// blocks the mutex for a minute
+mutex.acquire()
+.then(release => 
+   new Promise(resolve => setTimeout(() => { resolve("X"); }, 60000))
+   .finally(release)
+);
+
+mutex.acquire()
+.then(release =>
+   doAsyncStuff()  // worker returns a promise
+   .finally(release)
+)
+.catch(error => {
+   if (error.name === 'MutexTimeoutError') {
+      console.warn("Resource Busy! Please retry later!");
+      return defaultValue;
+   }
+   // ... other exceptions here
+});
+```
 
 ##### Async function example
 

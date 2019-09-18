@@ -8,7 +8,7 @@
 	 * with-timeout: MutexTimeoutError.js
 	 *
 	 * Created by Matthias Seemann on 13.09.2019.
-	 * Copyright (c) 2019 Visisoft OHG. All rights reserved.
+	 * Copyright (c) 2019 Matthias Seemann.
 	 */
 
 	class MutexTimeoutError extends Error

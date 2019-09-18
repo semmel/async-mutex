@@ -4,10 +4,12 @@
   "description": "A mutex for guarding async workflows",
   "scripts": {
     "test": "mocha --ui tdd test/mutex.js",
-    "build": "npm run build:umd && npm run build:esm",
+    "build": "npm run build:umd && npm run build:umdmin && npm run build:esm",
     "build:umd": "rollup --config --exports named",
+    "build:umdmin": "rollup --config rollup.min.config.js --exports named",
     "build:esm": "rollup --config rollup.esm.config.js"
   },
+  "author": "Matthias Seemann <seemann@visisoft.de> (https://github.com/semmel/)",
   "contributors": [
     "Christian Speckner <cnspeckn@googlemail.com> (https://github.com/DirtyHairy/)",
     "Matthias Seemann <seemann@visisoft.de> (https://github.com/semmel/)"
@@ -15,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/semmel/async-mutex"
+    "url": "https://github.com/semmel/async-timeout-mutex"
   },
   "keywords": [
     "mutex",
@@ -26,8 +28,13 @@
   "devDependencies": {
     "mocha": "^6.2.0",
     "rollup": "^1.21.4",
-    "rollup-plugin-commonjs": "^10.1.0"
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-terser": "^6.0.3"
   },
-  "main": "src/index.js",
+  "main": "dist/async-timeout-mutex.js",
+  "unpkg": "dist/async-timeout-mutex.min.js",
+  "files": [
+      "/dist"
+  ],
   "dependencies": {}
 }
